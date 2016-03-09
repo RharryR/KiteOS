@@ -78,6 +78,7 @@ ide_init(uint16_t pri, uint16_t pcr, uint16_t sec, uint16_t scr)
 		
 			// Select device
 			outb(buses[i].base + 6, 0xA0 | (j << 4));
+			sleep(3);
 			
 			// NULL out LBA and sectorcount
 			outb(buses[i].base + 2, 0x0);
@@ -88,6 +89,7 @@ ide_init(uint16_t pri, uint16_t pcr, uint16_t sec, uint16_t scr)
 			// Send identify command
 			outb(buses[i].base + 7, 0xEC);
 			irq_fired=0;
+			sleep(5);
 			
 			// Does the device exist?
 			if(!inb(buses[i].base + 7)) continue;
@@ -109,6 +111,7 @@ ide_init(uint16_t pri, uint16_t pcr, uint16_t sec, uint16_t scr)
 				if(lmi == 0x14 && lhi == 0xEB) type =1;
 				else continue;
 				outb(buses[i].base +7, 0xA1);
+				sleep(5);
 				irq_fired = 0;
 			}
 			
@@ -116,7 +119,7 @@ ide_init(uint16_t pri, uint16_t pcr, uint16_t sec, uint16_t scr)
 			char* iden_buff = kmalloc(512);
 			
 			// Read in the identification buffer, with a endianess of 0
-			read_buffer(i, iden_buff, 0);
+			read_buffer(i, iden_buff, 1);
 			
 			// The drive exists
 			devices[dev_c].exist=1;
@@ -192,7 +195,7 @@ ide_read(uint32_t lba, uint8_t device, void* loc, uint8_t sectors)
 	{
 		while(!irq_fired);
 		irq_fired = 0;
-		read_buffer(bus, loc+offset, 1);
+		read_buffer(bus, loc+offset, 0);
 		offset+=512;
 	}
 }

@@ -71,8 +71,10 @@ verify_superblock()
 int 
 ext2_init(uint8_t adevice)
 {
+	device=0;
 	sbi = kmalloc(sizeof(struct superblock));
 	parse_superblock();
+	printk(sbi->s_volume_name);
 	if(verify_superblock())
 		return 1;
 	return 0;
