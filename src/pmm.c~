@@ -1,0 +1,3 @@
+void* start=0x00080000;
+
+void* malloc(size_t )
