@@ -10,3 +10,5 @@ After you have built the cross compiler, you can build the kernel.
 We use CMake as our build system, so make sure you have it installed. 
 
 Simply issue 'cmake' in the root directory then 'make' to build. Enjoy :D
+
+To emulate run the system under QEMU, run the following: 'qemu-system-i386 -hda hdd.img -kernel kernelimz'

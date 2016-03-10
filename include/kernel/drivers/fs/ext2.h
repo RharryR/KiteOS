@@ -110,6 +110,14 @@ uint32_t i_faddr;
 char osd2[12];
 };
 
+struct dir_entry
+{
+uint32_t inode;
+uint16_t rec_len;
+uint8_t name_length;
+uint8_t filetype;
+};
+
 uint8_t device=0;
 
 struct superblock *sbi;

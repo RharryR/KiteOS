@@ -60,11 +60,37 @@ verify_superblock()
 {
 	if(sbi->s_magic != 0xEF53)
 	{
-		knl();
 		printk("KiteEXT2: Invalid magic-number found when reading ext2 FS.");
 		return 1;
 	}
 	return 0;
+}
+
+void
+read_root()
+{
+	// Root inode is always inode 2
+	struct inode root = get_inode(2);
+	
+	void* pb = kmalloc(1024);
+	
+	ide_read(block_to_lba(root.i_block0), device, pb, 2);
+	
+	void* offset = pb;
+	
+	while(1)
+	{
+		struct dir_entry f;
+		memcpy(&f, offset, sizeof(struct dir_entry));
+	
+		char* name="";
+		name = offset+6;
+		printk(name);
+		knl();
+		offset+= f.rec_len;
+		if(f.rec_len == 0)
+			break;
+	}
 }
 
 // Starts KiteEXT2 on the specified IDE device
@@ -74,9 +100,9 @@ ext2_init(uint8_t adevice)
 	device=0;
 	sbi = kmalloc(sizeof(struct superblock));
 	parse_superblock();
-	printk(sbi->s_volume_name);
 	if(verify_superblock())
 		return 1;
+	read_root();
 	return 0;
 }
 
